@@ -13,7 +13,7 @@ const abaVerbs = [
   { base: "kite", meaning: "風箏" },
   { base: "windy", meaning: "有風的／刮風的" },
   { base: "scissor", meaning: "剪刀" },
-  { base: "glue stick", meaning: "膠棒" },
+  { base: "glue stick", meaning: "口紅膠" },
 ];
 
 // DOM elements (IDs required by the spec)
