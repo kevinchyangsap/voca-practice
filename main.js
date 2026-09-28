@@ -18,9 +18,25 @@ window.abaVerbs = window.abaVerbs || [
   { base: "glue stick", meaning: "口紅膠" },
 ];
 
+window.SPU7Verbs = window.SPU7Verbs || [
+  { base: "car", meaning: "汽車" },
+  { base: "star", meaning: "星星" },
+  { base: "arm", meaning: "手臂" },
+  { base: "card", meaning: "卡片" },
+  { base: "park", meaning: "公園" },
+  { base: "farmer", meaning: "農夫" },
+  { base: "house", meaning: "房子" },
+  { base: "cork", meaning: "軟木塞" },
+  { base: "fork", meaning: "叉子" },
+  { base: "store", meaning: "商店" },
+  { base: "corn", meaning: "玉米" },
+  { base: "north", meaning: "北方" },
+];
+
 // DOM elements (IDs required by the spec)
 const selSEL15 = document.getElementById('SEL15');
 const selSEL16 = document.getElementById('SEL16');
+const selSPU7 = document.getElementById('SPU7');
 
 const wordBaseEl = document.getElementById('wordBase');
 const wordMeaningEl = document.getElementById('wordMeaning');
@@ -88,6 +104,11 @@ function shuffle(array) {
 // Build pool from selected checkboxes
 function buildPool() {
   const pool = [];
+  if (selSPU7 && selSPU7.checked) {
+    SPU7Verbs.forEach(v => {
+      pool.push({ id: `SPU7:${v.base}`, base: v.base, meaning: v.meaning, source: 'SPU7' });
+    });
+  }
   if (selSEL15.checked) {
     SEL15Verbs.forEach(v => {
       pool.push({ id: `SEL15:${v.base}`, base: v.base, meaning: v.meaning, source: 'SEL15' });
@@ -654,6 +675,7 @@ function init() {
   // default: select all available pools
   selSEL15.checked = true;
   selSEL16.checked = true;
+  if (selSPU7) selSPU7.checked = true;
   // start immediately: build, shuffle, and show the first question
   const started = startLearningPhase();
   if (!started) {
