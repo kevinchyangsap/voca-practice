@@ -255,7 +255,6 @@ const CARTOON_EMOJI_MAP = {
   'soccer ball': '⚽',
   windy: '💨',
   scissor: '✂️',
-  'glue stick': '🖍️',
   car: '🚗',
   star: '⭐',
   arm: '💪',
@@ -283,7 +282,7 @@ function twemojiUrl(emoji) {
 
 // Reference image loader: try local and cartoon mappings, then search for cartoon art.
 const LOCAL_IMAGE_MAP = {
-  // provide any local overrides like 'car': 'images/car.jpg'
+  'glue stick': 'icons/glue-stick.svg'
 };
 
 let referenceImageRequestId = 0;
@@ -721,6 +720,11 @@ selSEL15.addEventListener('change', () => {
 selSEL16.addEventListener('change', () => {
   startLearningPhase();
 });
+if (selSPU7) {
+  selSPU7.addEventListener('change', () => {
+    startLearningPhase();
+  });
+}
 
 // autoplay checkbox
 if (chkAutoplay) {
