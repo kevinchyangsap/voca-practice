@@ -229,12 +229,6 @@ function setCurrentItem(item) {
   // update weak status display
   updateWeakInfo();
   setFeedback('');
-  // play ding sound to indicate new question
-  playDing();
-  // if auto-speak enabled, perform speak immediately
-  if (chkAutoSpeak && chkAutoSpeak.checked) {
-    onSpeakBase();
-  }
 }
 
 function showAsEnglish() {
@@ -387,11 +381,36 @@ function onNext() {
     const had = pickNextLearningQuestion();
     if (!had) {
       // pickNextLearningQuestion will enter second phase
+      // still handle sounds for transition
+      handleNextSoundBehavior();
       return;
     }
   } else {
     // second phase weighted question
     pickWeightedQuestion();
+  }
+
+  // after showing new item, handle sound behavior based on platform and settings
+  handleNextSoundBehavior();
+}
+
+// Detect mobile device roughly via userAgent
+function isMobilePlatform() {
+  if (typeof navigator === 'undefined') return false;
+  return /Mobi|Android|iPhone|iPad|iPod|Opera Mini|IEMobile/i.test(navigator.userAgent);
+}
+
+function handleNextSoundBehavior() {
+  const mobile = isMobilePlatform();
+  // Mobile: never play ding or auto-speak on next
+  if (mobile) return;
+
+  // Desktop: if auto-speak enabled, only speak (no ding). Otherwise play ding only.
+  if (chkAutoSpeak && chkAutoSpeak.checked) {
+    // speak current item
+    onSpeakBase();
+  } else {
+    playDing();
   }
 }
 
