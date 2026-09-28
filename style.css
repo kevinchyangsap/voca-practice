@@ -185,8 +185,19 @@ button.ghost {background:transparent;color:var(--accent);border:1px solid rgba(1
   .pwa-mode .buttons { position: fixed; left:12px; right:12px; bottom:12px; background: rgba(255,255,255,0.98); padding:10px; border-radius:12px; box-shadow:0 12px 30px rgba(2,6,23,0.12); display:grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: auto auto auto; gap:10px; align-items:center; z-index:50; }
   .pwa-mode .autoplay-inline { grid-column: 1 / -1; display:flex; gap:10px; align-items:center; justify-content:flex-start; padding:6px 4px; }
   .pwa-mode .autoplay-inline .autoplay-interval input { width:56px; }
+  .pwa-mode .autoplay-inline { white-space:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  .pwa-mode .autoplay-inline label { flex: 0 0 auto; white-space:nowrap; }
+  .pwa-mode .autoplay-inline .autoplay-interval input { width:48px; }
   .pwa-mode #btnSpeakBase { grid-column: 1 / 2; }
   .pwa-mode #btnNext { grid-column: 2 / 3; }
   .pwa-mode #btnShowForms { grid-column: 3 / 4; }
   .pwa-mode .weakness-controls { grid-column: 1 / -1; justify-content:space-around; }
+
+  /* ensure buttons don't wrap and scale to their grid cells */
+  .pwa-mode .buttons button { width:100%; white-space:nowrap; }
+
+  @media (max-width:420px) {
+    .pwa-mode .autoplay-inline .autoplay-interval input { width:40px; }
+    .pwa-mode .autoplay-inline { gap:6px; padding:6px 6px; }
+  }
 }
