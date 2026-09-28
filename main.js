@@ -83,7 +83,7 @@ function startLearningPhase() {
   pickNextLearningQuestion();
   return true;
 }
-}
+
 
 // Prepare learning queue but do NOT immediately advance to the first question.
 // This is used on init and when toggling checkboxes so the "下一題" button
