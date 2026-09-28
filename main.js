@@ -31,6 +31,9 @@ window.SPU7Verbs = window.SPU7Verbs || [
   { base: "store", meaning: "商店" },
   { base: "corn", meaning: "玉米" },
   { base: "north", meaning: "北方" },
+  { base: "start", meaning: "開始" },
+  { base: "short", meaning: "短" },
+  { base: "popcorn", meaning: "爆米花" },
 ];
 
 // DOM elements (IDs required by the spec)
@@ -119,6 +122,8 @@ function buildPool() {
       pool.push({ id: `SEL16:${v.base}`, base: v.base, meaning: v.meaning, source: 'SEL16' });
     });
   }
+  // sort by `base` alphanumerically (numbers then letters), case-insensitive
+  pool.sort((a, b) => a.base.localeCompare(b.base, 'en', { numeric: true, sensitivity: 'base' }));
   return pool;
 }
 
