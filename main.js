@@ -74,6 +74,12 @@ const LOCAL_KEY = 'verb-practice-weakness-v2';
 let weaknesses = {}; // { "SEL15:bike": 2, ... }
 let learningQueue = []; // first stage shuffled array of items
 let learningIndex = 0;
+// additional runtime flags/state
+let secondPhase = false;
+let currentItem = null;
+let currentDisplayIsEnglish = true;
+let recentIds = [];
+let autoplayIntervalId = null;
 
 function startLearningPhase() {
   // Build the current pool and prepare the learning queue, then show first item.
