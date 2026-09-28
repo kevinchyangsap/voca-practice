@@ -126,7 +126,7 @@ function buildPool() {
 function startLearningPhase() {
   const pool = buildPool();
   if (!pool.length) {
-    setFeedback('請至少勾選一個題庫（SEL15 或 SEL16）。');
+    setFeedback('請至少勾選一個題庫。');
     return false;
   }
   // initialize learning queue: shuffle and set index
@@ -152,7 +152,7 @@ function prepareLearningQueue() {
     learningIndex = 0;
     secondPhase = false;
     updateRoundStatus();
-    setFeedback('請至少勾選一個題庫（SEL15 或 SEL16）。');
+    setFeedback('請至少勾選一個題庫。');
     return false;
   }
   learningQueue = pool.slice();
@@ -200,8 +200,9 @@ function enterSecondPhase() {
 // Weighted random selection with recent-3 avoidance
 function pickWeightedQuestion() {
   const pool = buildPool();
+  const pool = buildPool();
   if (!pool.length) {
-    setFeedback('請至少勾選一個題庫（SEL15 或 SEL16）。');
+    setFeedback('請至少勾選一個題庫。');
     return;
   }
   // attach weight
