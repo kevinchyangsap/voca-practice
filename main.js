@@ -115,6 +115,29 @@ function startLearningPhase() {
   return true;
 }
 
+// Prepare learning queue but do NOT immediately advance to the first question.
+// This is used on init and when toggling checkboxes so the "下一題" button
+// will start the sequence predictably.
+function prepareLearningQueue() {
+  const pool = buildPool();
+  if (!pool.length) {
+    learningQueue = [];
+    learningIndex = 0;
+    secondPhase = false;
+    updateRoundStatus();
+    setFeedback('請至少勾選一個題庫（SEL15 或 SEL16）。');
+    return false;
+  }
+  learningQueue = pool.slice();
+  shuffle(learningQueue);
+  learningIndex = 0;
+  secondPhase = false;
+  updateRoundStatus();
+  weakStatusEl.textContent = '';
+  setFeedback('');
+  return true;
+}
+
 function updateRoundStatus() {
   if (!secondPhase) {
     const remain = Math.max(0, learningQueue.length - learningIndex);
@@ -232,11 +255,14 @@ function speakText(text, lang) {
 // btnSpeakBase handler: read current question's 原形
 function onSpeakBase() {
   if (!currentItem) { setFeedback('目前沒有題目可朗讀。'); return; }
-  // "只朗讀目前題目的原形" => read the base (English word) even if displayed in zh? The spec says read the 原形 and use language corresponding to displayed language.
-  // We'll read base form text but choose voice language according to currently displayed language (as requested).
-  const textToRead = currentItem.base;
-  const lang = currentDisplayIsEnglish ? 'en-US' : 'zh-TW';
-  speakText(textToRead, lang);
+  // 讀出目前畫面上顯示的文字，並使用對應語音
+  if (currentDisplayIsEnglish) {
+    // 畫面顯示英文：朗讀英文原形
+    speakText(currentItem.base, 'en-US');
+  } else {
+    // 畫面顯示中文：朗讀中文翻譯
+    speakText(currentItem.meaning, 'zh-TW');
+  }
 }
 
 // btnShowForms handler: show translation and auto-speak translation
@@ -348,11 +374,11 @@ btnResetWeak.addEventListener('click', onResetWeak);
 
 // Also re-run learning phase when user toggles pool checkboxes (to reflect change)
 selSEL15.addEventListener('change', () => {
-  // restart learning
-  startLearningPhase();
+  // prepare learning queue when toggling checkboxes
+  prepareLearningQueue();
 });
 selSEL16.addEventListener('change', () => {
-  startLearningPhase();
+  prepareLearningQueue();
 });
 
 // When display language changed, re-render current display
@@ -379,11 +405,8 @@ function init() {
     selSEL15.checked = true;
   }
   // prepare initial learning queue but don't auto-advance until user presses 下一題
-  learningQueue = [];
-  learningIndex = 0;
-  secondPhase = false;
-  roundStatusEl.textContent = '完整學習輪：剩餘 0 題';
-  weakStatusEl.textContent = '';
+  prepareLearningQueue();
+  roundStatusEl.textContent = '請選擇題庫並按「下一題」開始';
   setFeedback('請選擇題庫，然後按「下一題」開始。');
 }
 
