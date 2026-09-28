@@ -107,14 +107,22 @@ button.ghost {background:transparent;color:var(--accent);border:1px solid rgba(1
     right:12px;
     bottom:12px;
     background:rgba(255,255,255,0.98);
-    padding:10px;
+    padding:8px;
     border-radius:12px;
     box-shadow:0 10px 30px rgba(2,6,23,0.12);
-    justify-content:space-between;
+    display:grid;
+    grid-template-columns:1fr 1.6fr 1fr;
+    gap:8px;
+    align-items:center;
     z-index:40;
   }
   .weakness-controls{ margin-bottom:78px; }
-  .container{ padding-bottom:110px; }
+  .container{ padding-bottom:140px; }
+
+  /* Make center Next button larger and more prominent */
+  #btnNext { grid-column:2 / 3; font-size:1.05rem; padding:14px 18px; border-radius:12px; }
+  #btnSpeakBase { grid-column:1 / 2; }
+  #btnShowForms { grid-column:3 / 4; }
 }
 
 .feedback {margin-top:12px;color:var(--muted)}
