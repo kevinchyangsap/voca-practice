@@ -47,6 +47,8 @@ const countSPU7 = document.getElementById('count-SPU7');
 const wordBaseEl = document.getElementById('wordBase');
 const wordMeaningEl = document.getElementById('wordMeaning');
 const formsEl = document.getElementById('forms');
+const refImageContainer = document.getElementById('refImageContainer');
+const refImageEl = document.getElementById('refImage');
 const roundStatusEl = document.getElementById('roundStatus');
 const weakStatusEl = document.getElementById('weakStatus');
 const feedbackEl = document.getElementById('feedback');
@@ -265,6 +267,38 @@ function setCurrentItem(item) {
   // update weak status display
   updateWeakInfo();
   setFeedback('');
+  // update reference image
+  updateReferenceImage(currentItem.base);
+}
+
+// Reference image loader: try local mapping, then Unsplash static query, then hide
+const LOCAL_IMAGE_MAP = {
+  // provide any local overrides like 'car': 'images/car.jpg'
+};
+
+function updateReferenceImage(word) {
+  if (!refImageEl || !refImageContainer) return;
+  // try exact local map first
+  const key = (word || '').toLowerCase();
+  if (LOCAL_IMAGE_MAP[key]) {
+    refImageEl.src = LOCAL_IMAGE_MAP[key];
+    refImageEl.alt = `參考圖片：${word}`;
+    refImageContainer.style.display = '';
+    return;
+  }
+
+  // fallback to Unsplash source (no API key required for simple queries)
+  try {
+    // Use Unsplash source image with query; use small size for faster load
+    const src = `https://source.unsplash.com/featured/600x400/?${encodeURIComponent(word)}`;
+    // set src and reveal container; if image fails to load, hide
+    refImageEl.onload = () => { refImageContainer.style.display = ''; };
+    refImageEl.onerror = () => { refImageContainer.style.display = 'none'; };
+    refImageEl.src = src;
+    refImageEl.alt = `參考圖片：${word}`;
+  } catch (e) {
+    refImageContainer.style.display = 'none';
+  }
 }
 
 function showAsEnglish() {

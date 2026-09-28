@@ -72,6 +72,9 @@ h1 {margin:0 0 8px 0;font-size:1.4rem;color:var(--accent);}
 .meaning {font-size:1.05rem;color:var(--muted)}
 .forms {font-size:0.95rem;color:#374151; margin-top:6px;}
 
+.ref-image { width:100%; max-width:420px; margin-top:12px; display:flex; justify-content:center; }
+.ref-image img { width:100%; height:auto; border-radius:10px; box-shadow: 0 8px 24px rgba(2,6,23,0.08); max-height:220px; object-fit:cover; }
+
 .buttons, .weakness-controls {
   display:flex;
   gap:8px;
