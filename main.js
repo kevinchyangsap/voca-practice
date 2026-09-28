@@ -428,27 +428,20 @@ btnMarkHard.addEventListener('click', onMarkHard);
 btnMarkEasy.addEventListener('click', onMarkEasy);
 btnResetWeak.addEventListener('click', onResetWeak);
 
-// Also re-run learning phase when user toggles pool checkboxes (to reflect change)
+// When pool checkboxes change: reshuffle and immediately show a new question
 selSEL15.addEventListener('change', () => {
-  // prepare learning queue when toggling checkboxes
-  prepareLearningQueue();
+  // restart learning phase to reshuffle and display immediately
+  startLearningPhase();
 });
 selSEL16.addEventListener('change', () => {
-  prepareLearningQueue();
+  startLearningPhase();
 });
 
 // When display language changed, re-render current display
 document.querySelectorAll('input[name="displayLang"]').forEach(r => {
   r.addEventListener('change', () => {
-    if (!currentItem) return;
-    // re-show current item according to new preference
-    const mode = document.querySelector('input[name="displayLang"]:checked')?.value || 'en';
-    if (mode === 'en') showAsEnglish();
-    else if (mode === 'zh') showAsChinese();
-    else {
-      // random: pick randomly for the current item (but keep current state predictable)
-      if (Math.random() < 0.5) showAsEnglish(); else showAsChinese();
-    }
+    // reshuffle pool and immediately display a new question when display language changes
+    startLearningPhase();
   });
 });
 
@@ -456,14 +449,15 @@ document.querySelectorAll('input[name="displayLang"]').forEach(r => {
 function init() {
   weaknesses = loadWeaknesses();
   updateWeakInfo();
-  // pre-check SEL15 by default for convenience
-  if (!selSEL15.checked && !selSEL16.checked) {
-    selSEL15.checked = true;
+  // default: select all available pools
+  selSEL15.checked = true;
+  selSEL16.checked = true;
+  // start immediately: build, shuffle, and show the first question
+  const started = startLearningPhase();
+  if (!started) {
+    roundStatusEl.textContent = '請選擇題庫並按「下一題」開始';
+    setFeedback('請選擇題庫，然後按「下一題」開始。');
   }
-  // prepare initial learning queue but don't auto-advance until user presses 下一題
-  prepareLearningQueue();
-  roundStatusEl.textContent = '請選擇題庫並按「下一題」開始';
-  setFeedback('請選擇題庫，然後按「下一題」開始。');
 }
 
 init();
