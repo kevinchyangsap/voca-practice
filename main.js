@@ -39,6 +39,7 @@ const btnResetWeak = document.getElementById('btnResetWeak');
 const optLangEn = document.getElementById('optLangEn');
 const optLangZh = document.getElementById('optLangZh');
 const optLangRand = document.getElementById('optLangRand');
+const chkAutoplay = document.getElementById('chkAutoplay');
 
 const LOCAL_KEY = 'verb-practice-weakness-v2';
 
@@ -50,6 +51,7 @@ let secondPhase = false;
 let recentIds = []; // last 3 ids
 let currentItem = null; // { id, base, meaning, source }
 let currentDisplayIsEnglish = true;
+let autoplayIntervalId = null;
 
 // Utility: safe localStorage read
 function loadWeaknesses() {
@@ -364,6 +366,22 @@ function onNext() {
   }
 }
 
+// Autoplay control: start or stop interval
+function startAutoplay() {
+  stopAutoplay();
+  autoplayIntervalId = setInterval(() => {
+    // simulate pressing next
+    onNext();
+  }, 10000); // 10 seconds
+}
+
+function stopAutoplay() {
+  if (autoplayIntervalId) {
+    clearInterval(autoplayIntervalId);
+    autoplayIntervalId = null;
+  }
+}
+
 // Weakness helpers
 function getWeight(id) {
   const w = weaknesses[id];
@@ -436,6 +454,13 @@ selSEL15.addEventListener('change', () => {
 selSEL16.addEventListener('change', () => {
   startLearningPhase();
 });
+
+// autoplay checkbox
+if (chkAutoplay) {
+  chkAutoplay.addEventListener('change', () => {
+    if (chkAutoplay.checked) startAutoplay(); else stopAutoplay();
+  });
+}
 
 // When display language changed, re-render current display
 document.querySelectorAll('input[name="displayLang"]').forEach(r => {
