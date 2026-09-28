@@ -245,52 +245,66 @@ function setCurrentItem(item) {
   updateReferenceImage(currentItem.base);
 }
 
-// Reference image loader: try local mapping, then Unsplash static query, then hide
+// Reference image loader: try local mapping, then search Wikimedia Commons.
 const LOCAL_IMAGE_MAP = {
   // provide any local overrides like 'car': 'images/car.jpg'
 };
 
+let referenceImageRequestId = 0;
+
 function updateReferenceImage(word) {
   if (!refImageEl || !refImageContainer) return;
+  const requestId = ++referenceImageRequestId;
+  refImageContainer.style.display = 'none';
+  refImageEl.removeAttribute('src');
   // try exact local map first
-  const key = (word || '').toLowerCase();
+  const key = (word || '').trim().toLowerCase();
   if (LOCAL_IMAGE_MAP[key]) {
     const srcLocal = LOCAL_IMAGE_MAP[key];
-    console.log('[refImage] using local image for', key, srcLocal);
     refImageEl.src = srcLocal;
     refImageEl.alt = `參考圖片：${word}`;
     refImageContainer.style.display = '';
     return;
   }
 
-  // fallback to Unsplash source (no API key required for simple queries)
-  try {
-    // Use Unsplash source image with query; use small size for faster load
-    const src = `https://source.unsplash.com/featured/600x400/?${encodeURIComponent(word)}`;
-    console.log('[refImage] attempting remote image for', key, src);
-    // set src and reveal container; if image fails to load, hide
-    let settled = false;
-    const timeoutId = setTimeout(() => {
-      if (!settled) {
-        // loading taking too long -> hide
-        refImageContainer.style.display = 'none';
-        if (refImageLog) refImageLog.textContent = 'timeout';
-        console.log('[refImage] timeout for', src);
-      }
-    }, 6000);
+  const query = new URLSearchParams({
+    action: 'query',
+    generator: 'search',
+    gsrsearch: `filetype:bitmap ${word}`,
+    gsrnamespace: '6',
+    gsrlimit: '1',
+    prop: 'imageinfo',
+    iiprop: 'url',
+    iiurlwidth: '600',
+    format: 'json',
+    origin: '*'
+  });
 
-    refImageEl.onload = () => { settled = true; clearTimeout(timeoutId); refImageContainer.style.display = ''; if (refImageLog) refImageLog.textContent = 'ok'; };
-    refImageEl.onload = () => { settled = true; clearTimeout(timeoutId); refImageContainer.style.display = ''; if (refImageLog) refImageLog.textContent = 'ok'; console.log('[refImage] loaded', src); };
-    refImageEl.onerror = () => { settled = true; clearTimeout(timeoutId); refImageContainer.style.display = 'none'; if (refImageLog) refImageLog.textContent = 'error'; console.log('[refImage] error loading', src); };
-    // log attempted src for debugging
-    if (refImageLog) refImageLog.textContent = src;
-    refImageEl.src = src;
-    refImageEl.alt = `參考圖片：${word}`;
-  } catch (e) {
-    refImageContainer.style.display = 'none';
-    if (refImageLog) refImageLog.textContent = 'exception';
-    console.log('[refImage] exception', e);
-  }
+  fetch(`https://commons.wikimedia.org/w/api.php?${query}`)
+    .then(response => {
+      if (!response.ok) throw new Error(`Image search failed (${response.status})`);
+      return response.json();
+    })
+    .then(data => {
+      if (requestId !== referenceImageRequestId) return;
+      const pages = Object.values(data.query?.pages || {});
+      const image = pages[0]?.imageinfo?.[0];
+      const src = image?.thumburl || image?.url;
+      if (!src) throw new Error('No matching image');
+      refImageEl.onload = () => {
+        if (requestId === referenceImageRequestId) refImageContainer.style.display = '';
+      };
+      refImageEl.onerror = () => {
+        if (requestId === referenceImageRequestId) refImageContainer.style.display = 'none';
+      };
+      refImageEl.alt = `參考圖片：${word}`;
+      refImageEl.src = src;
+    })
+    .catch(error => {
+      if (requestId !== referenceImageRequestId) return;
+      refImageContainer.style.display = 'none';
+      console.warn('[refImage] unable to load image for', word, error);
+    });
 }
 
 function showAsEnglish() {
