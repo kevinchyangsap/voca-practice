@@ -245,7 +245,43 @@ function setCurrentItem(item) {
   updateReferenceImage(currentItem.base);
 }
 
-// Reference image loader: try local mapping, then search Wikimedia Commons.
+// Cartoon-style illustrations for the vocabulary used in the current word sets.
+// Twemoji provides consistent, colorful SVG artwork for these familiar concepts.
+const CARTOON_EMOJI_MAP = {
+  bike: '🚲',
+  'inline skates': '🛼',
+  kite: '🪁',
+  skateboard: '🛹',
+  'soccer ball': '⚽',
+  windy: '💨',
+  scissor: '✂️',
+  'glue stick': '🖍️',
+  car: '🚗',
+  star: '⭐',
+  arm: '💪',
+  start: '🏁',
+  short: '📏',
+  popcorn: '🍿',
+  card: '🃏',
+  park: '🏞️',
+  farmer: '🧑‍🌾',
+  house: '🏠',
+  cork: '🍾',
+  fork: '🍴',
+  store: '🏪',
+  corn: '🌽',
+  north: '🧭'
+};
+
+function twemojiUrl(emoji) {
+  const codepoints = Array.from(emoji)
+    .map(character => character.codePointAt(0).toString(16))
+    .filter(codepoint => codepoint !== 'fe0f')
+    .join('-');
+  return `https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/${codepoints}.svg`;
+}
+
+// Reference image loader: try local and cartoon mappings, then search for cartoon art.
 const LOCAL_IMAGE_MAP = {
   // provide any local overrides like 'car': 'images/car.jpg'
 };
@@ -267,10 +303,23 @@ function updateReferenceImage(word) {
     return;
   }
 
+  const cartoon = CARTOON_EMOJI_MAP[key];
+  if (cartoon) {
+    refImageEl.alt = `卡通圖片：${word}`;
+    refImageEl.onload = () => {
+      if (requestId === referenceImageRequestId) refImageContainer.style.display = '';
+    };
+    refImageEl.onerror = () => {
+      if (requestId === referenceImageRequestId) refImageContainer.style.display = 'none';
+    };
+    refImageEl.src = twemojiUrl(cartoon);
+    return;
+  }
+
   const query = new URLSearchParams({
     action: 'query',
     generator: 'search',
-    gsrsearch: `filetype:bitmap ${word}`,
+    gsrsearch: `filetype:bitmap ${word} cartoon illustration`,
     gsrnamespace: '6',
     gsrlimit: '1',
     prop: 'imageinfo',
