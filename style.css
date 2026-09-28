@@ -130,6 +130,16 @@ button.ghost {background:transparent;color:var(--accent);border:1px solid rgba(1
   /* Second row: main actions in three columns */
   #btnSpeakBase { grid-column: 1 / 2; }
   #btnNext { grid-column: 2 / 3; font-size:1.05rem; padding:14px 18px; border-radius:12px; }
+  #btnNext {
+    background: linear-gradient(90deg,#f59e0b,#f97316) !important;
+    color: #fff;
+    font-size:1.15rem !important;
+    padding:16px 24px !important;
+    border-radius:16px !important;
+    box-shadow: 0 14px 30px rgba(249,115,22,0.22);
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  #btnNext:hover{ transform: translateY(-4px); box-shadow: 0 18px 40px rgba(249,115,22,0.28); }
   #btnShowForms { grid-column: 3 / 4; }
 }
 
