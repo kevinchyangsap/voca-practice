@@ -3,10 +3,12 @@
 :root{
   --bg:#f7fafc;
   --card:#ffffff;
-  --accent:#0b78d1;
+  --primary-start:#06b6d4; /* cyan */
+  --primary-end:#3b82f6;   /* blue */
+  --accent:#7c3aed; /* purple accent for headings */
   --muted:#6b7280;
-  --danger:#e63946;
-  --success:#2a9d8f;
+  --danger:#ef4444; /* red */
+  --success:#10b981; /* green */
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", "Helvetica Neue", Arial;
 }
 
@@ -71,19 +73,49 @@ h1 {margin:0 0 8px 0;font-size:1.4rem;color:var(--accent);}
 }
 
 button {
-  background:var(--accent);
+  background: linear-gradient(90deg,var(--primary-start),var(--primary-end));
   color:#fff;
   border:none;
   padding:10px 14px;
-  border-radius:8px;
+  border-radius:10px;
   cursor:pointer;
   font-weight:600;
-  transition:transform .08s ease, box-shadow .08s ease;
+  transition:transform .12s cubic-bezier(.2,.9,.3,1), box-shadow .12s ease;
 }
 
 button:active{transform:translateY(1px)}
-button.secondary {background:#6b7280}
-button.ghost {background:transparent;color:var(--accent);border:1px solid rgba(11,120,209,0.12)}
+button:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(59,130,246,0.18)}
+button.secondary {background:linear-gradient(90deg,#94a3b8,#6b7280)}
+button.ghost {background:transparent;color:var(--accent);border:1px solid rgba(124,58,237,0.12)}
+
+/* Specific actions get distinct colors to improve affordance */
+#btnSpeakBase { background: linear-gradient(90deg,#f97316,#ef4444); }
+#btnShowForms { background: linear-gradient(90deg,#34d399,#10b981); }
+#btnNext { background: linear-gradient(90deg,var(--primary-start),var(--primary-end)); padding:12px 18px; }
+#btnMarkHard { background: linear-gradient(90deg,#fb7185,#ef4444); }
+#btnMarkEasy { background: linear-gradient(90deg,#34d399,#10b981); }
+#btnResetWeak { background: linear-gradient(90deg,#94a3b8,#6b7280); }
+
+/* Make autoplay controls visually compact */
+.autoplay-toggle, .autoplay-interval {display:flex;align-items:center;gap:6px;color:var(--muted);font-weight:600}
+
+/* Sticky bottom action bar on small screens for easier reachability */
+@media (max-width:719px){
+  .buttons {
+    position:fixed;
+    left:12px;
+    right:12px;
+    bottom:12px;
+    background:rgba(255,255,255,0.98);
+    padding:10px;
+    border-radius:12px;
+    box-shadow:0 10px 30px rgba(2,6,23,0.12);
+    justify-content:space-between;
+    z-index:40;
+  }
+  .weakness-controls{ margin-bottom:78px; }
+  .container{ padding-bottom:110px; }
+}
 
 .feedback {margin-top:12px;color:var(--muted)}
 
