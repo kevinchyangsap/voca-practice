@@ -240,12 +240,66 @@ function showAsChinese() {
 }
 
 // Speak utility: cancel previous then speak text in lang with rate ~0.88
-function speakText(text, lang) {
+// Voice selection helper with fallbacks. preferredLang may be like 'zh-TW' or 'en-US'.
+let voicesCache = [];
+function loadVoices() {
+  voicesCache = window.speechSynthesis.getVoices() || [];
+  if (!voicesCache.length) {
+    // some browsers populate voices asynchronously
+    window.speechSynthesis.onvoiceschanged = () => {
+      voicesCache = window.speechSynthesis.getVoices() || [];
+    };
+  }
+}
+
+function findBestVoice(preferredLang) {
+  if (!voicesCache.length) loadVoices();
+  const langsToTry = [];
+  if (preferredLang) {
+    langsToTry.push(preferredLang);
+    // push more general fallbacks
+    const base = preferredLang.split('-')[0];
+    if (base && base !== preferredLang) langsToTry.push(base);
+  }
+  // generic fallbacks
+  langsToTry.push('en-US', 'en', 'zh-TW', 'zh-Hant', 'zh-CN', 'zh');
+
+  for (const ln of langsToTry) {
+    const v = voicesCache.find(voice => {
+      if (!voice.lang) return false;
+      // match exact or startsWith
+      if (voice.lang.toLowerCase() === ln.toLowerCase()) return true;
+      if (voice.lang.toLowerCase().startsWith(ln.toLowerCase())) return true;
+      return false;
+    });
+    if (v) return v;
+  }
+  // last resort: return first available
+  return voicesCache[0] || null;
+}
+
+function speakText(text, preferredLang) {
   try {
+    // cancel any current speech
     window.speechSynthesis.cancel();
+
+    // ensure voices are loaded
+    if (!voicesCache.length) loadVoices();
+
     const utter = new SpeechSynthesisUtterance(text);
-    utter.lang = lang;
-    utter.rate = 0.88;
+    utter.rate = 0.88; // within required range
+
+    // choose voice if available
+    const voice = findBestVoice(preferredLang);
+    if (voice) {
+      utter.voice = voice;
+      // set lang to the voice lang so some engines handle pronunciation better
+      try { utter.lang = voice.lang || preferredLang; } catch (e) {}
+    } else if (preferredLang) {
+      // no voice found, still set lang to hint the synthesizer
+      try { utter.lang = preferredLang; } catch (e) {}
+    }
+
     window.speechSynthesis.speak(utter);
   } catch (e) {
     console.warn('語音發生錯誤', e);
