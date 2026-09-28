@@ -13,7 +13,7 @@ window.SEL15Verbs = window.SEL15Verbs || [
 
 window.abaVerbs = window.abaVerbs || [
   { base: "kite", meaning: "風箏" },
-  { base: "windy", meaning: "有風的／刮風的" },
+  { base: "windy", meaning: "有風的" },
   { base: "scissor", meaning: "剪刀" },
   { base: "glue stick", meaning: "口紅膠" },
 ];
