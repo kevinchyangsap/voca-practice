@@ -181,8 +181,12 @@ button.ghost {background:transparent;color:var(--accent);border:1px solid rgba(1
   .autoplay-inline { grid-column: 1 / -1; }
 
   /* PWA mobile: place inline autoplay inside the fixed bottom bar without causing line breaks */
-  .pwa-mode .buttons { padding-top: 0; }
-  .pwa-mode .autoplay-inline { position: absolute; left:14px; top:8px; display:flex; gap:8px; align-items:center; z-index:42; }
-  .pwa-mode .buttons { position: fixed; left:12px; right:12px; bottom:12px; }
+  /* make fixed bottom bar a compact grid with three rows: autoplay, actions, weakness */
+  .pwa-mode .buttons { position: fixed; left:12px; right:12px; bottom:12px; background: rgba(255,255,255,0.98); padding:10px; border-radius:12px; box-shadow:0 12px 30px rgba(2,6,23,0.12); display:grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: auto auto auto; gap:10px; align-items:center; z-index:50; }
+  .pwa-mode .autoplay-inline { grid-column: 1 / -1; display:flex; gap:10px; align-items:center; justify-content:flex-start; padding:6px 4px; }
   .pwa-mode .autoplay-inline .autoplay-interval input { width:56px; }
+  .pwa-mode #btnSpeakBase { grid-column: 1 / 2; }
+  .pwa-mode #btnNext { grid-column: 2 / 3; }
+  .pwa-mode #btnShowForms { grid-column: 3 / 4; }
+  .pwa-mode .weakness-controls { grid-column: 1 / -1; justify-content:space-around; }
 }
