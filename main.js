@@ -40,6 +40,7 @@ const optLangEn = document.getElementById('optLangEn');
 const optLangZh = document.getElementById('optLangZh');
 const optLangRand = document.getElementById('optLangRand');
 const chkAutoplay = document.getElementById('chkAutoplay');
+const inputAutoplaySec = document.getElementById('inputAutoplaySec');
 
 const LOCAL_KEY = 'verb-practice-weakness-v2';
 
@@ -369,10 +370,11 @@ function onNext() {
 // Autoplay control: start or stop interval
 function startAutoplay() {
   stopAutoplay();
+  const sec = parseInt((inputAutoplaySec && inputAutoplaySec.value) || 10, 10);
+  const ms = Math.max(1000, sec * 1000);
   autoplayIntervalId = setInterval(() => {
-    // simulate pressing next
     onNext();
-  }, 10000); // 10 seconds
+  }, ms);
 }
 
 function stopAutoplay() {
@@ -459,6 +461,15 @@ selSEL16.addEventListener('change', () => {
 if (chkAutoplay) {
   chkAutoplay.addEventListener('change', () => {
     if (chkAutoplay.checked) startAutoplay(); else stopAutoplay();
+  });
+}
+
+// when user changes interval, restart autoplay if currently enabled
+if (inputAutoplaySec) {
+  inputAutoplaySec.addEventListener('change', () => {
+    if (chkAutoplay && chkAutoplay.checked) {
+      startAutoplay();
+    }
   });
 }
 
