@@ -90,6 +90,39 @@ function startLearningPhase() {
   return true;
 }
 
+// Fisher-Yates shuffle (in-place)
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+  }
+  return arr;
+}
+
+// Build the active pool based on checked pool checkboxes.
+function buildPool() {
+  const out = [];
+  // SEL15
+  if (selSEL15 && selSEL15.checked && Array.isArray(window.SEL15Verbs)) {
+    for (const it of window.SEL15Verbs) {
+      out.push({ id: `SEL15:${it.base}`, base: it.base, meaning: it.meaning, source: 'SEL15' });
+    }
+  }
+  // SEL16 / abaVerbs
+  if (selSEL16 && selSEL16.checked && Array.isArray(window.abaVerbs)) {
+    for (const it of window.abaVerbs) {
+      out.push({ id: `SEL16:${it.base}`, base: it.base, meaning: it.meaning, source: 'SEL16' });
+    }
+  }
+  // SPU7
+  if (selSPU7 && selSPU7.checked && Array.isArray(window.SPU7Verbs)) {
+    for (const it of window.SPU7Verbs) {
+      out.push({ id: `SPU7:${it.base}`, base: it.base, meaning: it.meaning, source: 'SPU7' });
+    }
+  }
+  return out;
+}
+
 
 // Prepare learning queue but do NOT immediately advance to the first question.
 // This is used on init and when toggling checkboxes so the "下一題" button
