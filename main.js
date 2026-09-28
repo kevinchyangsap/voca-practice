@@ -284,13 +284,20 @@ function findBestVoice(preferredLang) {
   return voicesCache[0] || null;
 }
 
-function speakText(text, preferredLang) {
+function speakText(text, preferredLang, attempt = 0) {
   try {
     // cancel any current speech
-    window.speechSynthesis.cancel();
+    try { window.speechSynthesis.cancel(); } catch(e){}
 
     // ensure voices are loaded
     if (!voicesCache.length) loadVoices();
+
+    // If voices aren't yet available, retry a few times (useful on Android where voices load async)
+    const available = (window.speechSynthesis && (window.speechSynthesis.getVoices && window.speechSynthesis.getVoices().length > 0)) || voicesCache.length > 0;
+    if (!available && attempt < 6) {
+      setTimeout(() => speakText(text, preferredLang, attempt + 1), 250);
+      return;
+    }
 
     const utter = new SpeechSynthesisUtterance(text);
     utter.rate = 0.88; // within required range
@@ -298,17 +305,29 @@ function speakText(text, preferredLang) {
     // choose voice if available
     const voice = findBestVoice(preferredLang);
     if (voice) {
-      utter.voice = voice;
-      // set lang to the voice lang so some engines handle pronunciation better
+      try { utter.voice = voice; } catch(e){}
       try { utter.lang = voice.lang || preferredLang; } catch (e) {}
     } else if (preferredLang) {
-      // no voice found, still set lang to hint the synthesizer
       try { utter.lang = preferredLang; } catch (e) {}
     }
+
+    utter.onerror = (ev) => {
+      console.warn('TTS error', ev);
+      setFeedback('語音播放失敗（TTS）');
+    };
+
+    utter.onstart = () => {
+      // mark audio as unlocked when TTS starts
+      audioUnlocked = true;
+    };
+
+    // resume audio context if suspended (some browsers tie audio output permission)
+    try { if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume().catch(()=>{}); } catch(e){}
 
     window.speechSynthesis.speak(utter);
   } catch (e) {
     console.warn('語音發生錯誤', e);
+    setFeedback('語音發生錯誤');
   }
 }
 
