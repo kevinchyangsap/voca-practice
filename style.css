@@ -79,6 +79,9 @@ h1 {margin:0 0 8px 0;font-size:1.4rem;color:var(--accent);}
   margin-top:10px;
 }
 
+.autoplay-row { display:flex; gap:12px; align-items:center; margin:10px 0 6px 0; }
+.autoplay-row .autoplay-toggle, .autoplay-row .autoplay-interval { margin-right:12px }
+
 button {
   background: linear-gradient(90deg,var(--primary-start),var(--primary-end));
   color:#fff;
@@ -127,6 +130,9 @@ button.ghost {background:transparent;color:var(--accent);border:1px solid rgba(1
   .weakness-controls{ margin:0; display:flex; gap:8px; align-items:center; }
   .container{ padding-bottom:140px; }
 
+  /* mobile: keep autoplay controls above the fixed button bar */
+  .autoplay-row { position: fixed; left:12px; right:12px; bottom:84px; background: rgba(255,255,255,0.98); padding:8px 12px; border-radius:10px; box-shadow:0 8px 20px rgba(2,6,23,0.08); z-index:41; justify-content:space-between }
+
   /* First row: weakness controls span full width */
   .weakness-controls { grid-column: 1 / -1; justify-content:space-around; padding:6px 4px; }
 
@@ -162,4 +168,7 @@ button.ghost {background:transparent;color:var(--accent);border:1px solid rgba(1
   #btnSpeakBase { grid-column:1 / 2; }
   #btnNext { grid-column:2 / 3; }
   #btnShowForms { grid-column:3 / 4; }
+
+  /* desktop: autoplay row spans full width above buttons */
+  .autoplay-row { grid-column: 1 / -1; display:flex; justify-content:flex-start; align-items:center; margin-bottom:6px }
 }
