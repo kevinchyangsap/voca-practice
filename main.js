@@ -1,7 +1,9 @@
 // main.js
 
 // Data sets (題庫)
-const SEL15Verbs = [
+// Assign to window to avoid duplicate-declaration errors if script is loaded
+// more than once (Pages or caching can cause duplicate execution).
+window.SEL15Verbs = window.SEL15Verbs || [
   { base: "bike", meaning: "腳踏車" },
   { base: "inline skates", meaning: "直排溜冰鞋" },
   { base: "kite", meaning: "風箏" },
@@ -9,7 +11,7 @@ const SEL15Verbs = [
   { base: "soccer ball", meaning: "足球" },
 ];
 
-const abaVerbs = [
+window.abaVerbs = window.abaVerbs || [
   { base: "kite", meaning: "風箏" },
   { base: "windy", meaning: "有風的／刮風的" },
   { base: "scissor", meaning: "剪刀" },
