@@ -40,6 +40,9 @@ window.SPU7Verbs = window.SPU7Verbs || [
 const selSEL15 = document.getElementById('SEL15');
 const selSEL16 = document.getElementById('SEL16');
 const selSPU7 = document.getElementById('SPU7');
+const countSEL15 = document.getElementById('count-SEL15');
+const countSEL16 = document.getElementById('count-SEL16');
+const countSPU7 = document.getElementById('count-SPU7');
 
 const wordBaseEl = document.getElementById('wordBase');
 const wordMeaningEl = document.getElementById('wordMeaning');
@@ -166,6 +169,15 @@ function prepareLearningQueue() {
   weakStatusEl.textContent = '';
   setFeedback('');
   return true;
+}
+
+// Update pool counts in the UI
+function updatePoolCounts() {
+  try {
+    if (countSEL15) countSEL15.textContent = `(${SEL15Verbs.length})`;
+    if (countSEL16) countSEL16.textContent = `(${abaVerbs.length})`;
+    if (countSPU7 && window.SPU7Verbs) countSPU7.textContent = `(${SPU7Verbs.length})`;
+  } catch (e) { /* ignore UI update failures */ }
 }
 
 function updateRoundStatus() {
@@ -679,6 +691,8 @@ function init() {
   selSEL15.checked = true;
   selSEL16.checked = true;
   if (selSPU7) selSPU7.checked = true;
+  // populate counts
+  updatePoolCounts();
   // start immediately: build, shuffle, and show the first question
   const started = startLearningPhase();
   if (!started) {
