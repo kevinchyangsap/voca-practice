@@ -49,6 +49,7 @@ const wordMeaningEl = document.getElementById('wordMeaning');
 const formsEl = document.getElementById('forms');
 const refImageContainer = document.getElementById('refImageContainer');
 const refImageEl = document.getElementById('refImage');
+const refImageLog = document.getElementById('refImageLog');
 const roundStatusEl = document.getElementById('roundStatus');
 const weakStatusEl = document.getElementById('weakStatus');
 const feedbackEl = document.getElementById('feedback');
@@ -292,12 +293,24 @@ function updateReferenceImage(word) {
     // Use Unsplash source image with query; use small size for faster load
     const src = `https://source.unsplash.com/featured/600x400/?${encodeURIComponent(word)}`;
     // set src and reveal container; if image fails to load, hide
-    refImageEl.onload = () => { refImageContainer.style.display = ''; };
-    refImageEl.onerror = () => { refImageContainer.style.display = 'none'; };
+    let settled = false;
+    const timeoutId = setTimeout(() => {
+      if (!settled) {
+        // loading taking too long -> hide
+        refImageContainer.style.display = 'none';
+        if (refImageLog) refImageLog.textContent = 'timeout';
+      }
+    }, 6000);
+
+    refImageEl.onload = () => { settled = true; clearTimeout(timeoutId); refImageContainer.style.display = ''; if (refImageLog) refImageLog.textContent = 'ok'; };
+    refImageEl.onerror = () => { settled = true; clearTimeout(timeoutId); refImageContainer.style.display = 'none'; if (refImageLog) refImageLog.textContent = 'error'; };
+    // log attempted src for debugging
+    if (refImageLog) refImageLog.textContent = src;
     refImageEl.src = src;
     refImageEl.alt = `參考圖片：${word}`;
   } catch (e) {
     refImageContainer.style.display = 'none';
+    if (refImageLog) refImageLog.textContent = 'exception';
   }
 }
 
