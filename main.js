@@ -40,6 +40,7 @@ const optLangEn = document.getElementById('optLangEn');
 const optLangZh = document.getElementById('optLangZh');
 const optLangRand = document.getElementById('optLangRand');
 const chkAutoplay = document.getElementById('chkAutoplay');
+const chkAutoSpeak = document.getElementById('chkAutoSpeak');
 const inputAutoplaySec = document.getElementById('inputAutoplaySec');
 
 const LOCAL_KEY = 'verb-practice-weakness-v2';
@@ -228,6 +229,12 @@ function setCurrentItem(item) {
   // update weak status display
   updateWeakInfo();
   setFeedback('');
+  // play ding sound to indicate new question
+  playDing();
+  // if auto-speak enabled, perform speak immediately
+  if (chkAutoSpeak && chkAutoSpeak.checked) {
+    onSpeakBase();
+  }
 }
 
 function showAsEnglish() {
@@ -308,6 +315,27 @@ function speakText(text, preferredLang) {
     window.speechSynthesis.speak(utter);
   } catch (e) {
     console.warn('語音發生錯誤', e);
+  }
+}
+
+// Ding sound using Web Audio for a short click/ping
+let audioCtx = null;
+function playDing() {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(1200, audioCtx.currentTime);
+    g.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.12, audioCtx.currentTime + 0.001);
+    g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.15);
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start();
+    o.stop(audioCtx.currentTime + 0.16);
+  } catch (e) {
+    // fallback: try short beep via Audio element (none provided)
+    console.warn('Ding failed', e);
   }
 }
 
@@ -470,6 +498,13 @@ if (inputAutoplaySec) {
     if (chkAutoplay && chkAutoplay.checked) {
       startAutoplay();
     }
+  });
+}
+
+// auto-speak checkbox listener (no other action needed here)
+if (chkAutoSpeak) {
+  chkAutoSpeak.addEventListener('change', () => {
+    setFeedback(chkAutoSpeak.checked ? '已啟用自動發音' : '已停用自動發音');
   });
 }
 
