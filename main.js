@@ -74,81 +74,15 @@ const LOCAL_KEY = 'verb-practice-weakness-v2';
 let weaknesses = {}; // { "SEL15:bike": 2, ... }
 let learningQueue = []; // first stage shuffled array of items
 let learningIndex = 0;
-  try {
-    // Try multiple query variants to increase chance of relevant result.
-    const variants = [];
-    const cleaned = (word || '').trim();
-    if (cleaned) variants.push(cleaned);
-    // try splitting tokens (first token)
-    const first = cleaned.split(/\s+/)[0];
-    if (first && first !== cleaned) variants.push(first);
-    // try last token
-    const toks = cleaned.split(/\s+/);
-    const last = toks[toks.length - 1];
-    if (last && last !== cleaned && last !== first) variants.push(last);
-    // generic fallback
-    variants.push('object');
 
-    // loader that tries variants sequentially
-    function tryVariants(i) {
-      if (i >= variants.length) {
-        // all failed
-        refImageContainer.style.display = 'none';
-        if (refImageLog) refImageLog.textContent = 'all-failed';
-        console.log('[refImage] all variants failed for', key, variants);
-        return;
-      }
-      const q = variants[i];
-      const src = `https://source.unsplash.com/featured/600x400/?${encodeURIComponent(q)}`;
-      console.log('[refImage] attempting remote image variant', q, src);
-      if (refImageLog) refImageLog.textContent = src;
-
-      // use off-DOM Image to test load
-      const tester = new Image();
-      let settled = false;
-      const to = setTimeout(() => {
-        if (!settled) {
-          settled = true;
-          console.log('[refImage] timeout for', src);
-          tryVariants(i + 1);
-        }
-      }, 6000);
-
-      tester.onload = () => {
-        if (settled) return;
-        settled = true; clearTimeout(to);
-        // accept this image
-        refImageEl.src = src;
-        refImageEl.alt = `參考圖片：${word}`;
-        refImageContainer.style.display = '';
-        if (refImageLog) refImageLog.textContent = 'ok';
-        console.log('[refImage] loaded', src);
-      };
-      tester.onerror = () => {
-        if (settled) return;
-        settled = true; clearTimeout(to);
-        console.log('[refImage] error loading', src);
-        tryVariants(i + 1);
-      };
-      tester.src = src;
-    }
-
-    tryVariants(0);
-  } catch (e) {
-    refImageContainer.style.display = 'none';
-    if (refImageLog) refImageLog.textContent = 'exception';
-    console.log('[refImage] exception', e);
-  }
-  learningQueue = pool.slice();
-  shuffle(learningQueue);
-  learningIndex = 0;
-  secondPhase = false;
-  updateRoundStatus();
-  weakStatusEl.textContent = '';
-  setFeedback('');
-  // start with first question
+function startLearningPhase() {
+  // Build the current pool and prepare the learning queue, then show first item.
+  const ok = prepareLearningQueue();
+  if (!ok) return false;
+  // show first question immediately
   pickNextLearningQuestion();
   return true;
+}
 }
 
 // Prepare learning queue but do NOT immediately advance to the first question.
