@@ -583,6 +583,46 @@ if (chkAutoplay) {
   });
 }
 
+// PWA / inline autoplay elements (duplicate controls placed in button bar for installed mode)
+const autoplayInline = document.getElementById('autoplayInline');
+const chkAutoplayInline = document.getElementById('chkAutoplayInline');
+const inputAutoplaySecInline = document.getElementById('inputAutoplaySecInline');
+const chkAutoSpeakInline = document.getElementById('chkAutoSpeakInline');
+
+// If running as PWA, mirror controls into inline bar for easier thumb reach.
+function enablePWAInlineControls() {
+  if (!autoplayInline) return;
+  document.documentElement.classList.add('pwa-mode');
+  // initialize inline states from primary controls
+  if (chkAutoplayInline) chkAutoplayInline.checked = chkAutoplay.checked;
+  if (inputAutoplaySecInline) inputAutoplaySecInline.value = inputAutoplaySec.value;
+  if (chkAutoSpeakInline) chkAutoSpeakInline.checked = chkAutoSpeak.checked;
+
+  // listeners to inline controls: mirror back to main controls
+  if (chkAutoplayInline) {
+    chkAutoplayInline.addEventListener('change', () => {
+      chkAutoplay.checked = chkAutoplayInline.checked;
+      if (chkAutoplay.checked) startAutoplay(); else stopAutoplay();
+      if (chkAutoplayInline.checked) setFeedback('已啟用自動播放（PWA）');
+    });
+  }
+  if (inputAutoplaySecInline) {
+    inputAutoplaySecInline.addEventListener('change', () => {
+      inputAutoplaySec.value = inputAutoplaySecInline.value;
+      if (chkAutoplay && chkAutoplay.checked) startAutoplay();
+    });
+  }
+  if (chkAutoSpeakInline) {
+    chkAutoSpeakInline.addEventListener('change', () => {
+      chkAutoSpeak.checked = chkAutoSpeakInline.checked;
+      setFeedback(chkAutoSpeak.checked ? '已啟用自動發音' : '已停用自動發音');
+    });
+  }
+}
+
+// if in PWA/standalone, enable inline controls
+if (isPWAMode()) enablePWAInlineControls();
+
 // when user changes interval, restart autoplay if currently enabled
 if (inputAutoplaySec) {
   inputAutoplaySec.addEventListener('change', () => {

@@ -82,6 +82,13 @@ h1 {margin:0 0 8px 0;font-size:1.4rem;color:var(--accent);}
 .autoplay-row { display:flex; gap:12px; align-items:center; margin:10px 0 6px 0; }
 .autoplay-row .autoplay-toggle, .autoplay-row .autoplay-interval { margin-right:12px }
 
+/* Inline autoplay controls used when running as an installed PWA */
+.autoplay-inline { display:none; gap:12px; align-items:center; justify-content:flex-start; }
+.autoplay-inline .autoplay-toggle, .autoplay-inline .autoplay-interval { margin-right:12px; }
+
+.pwa-mode .autoplay-row { display:none; }
+.pwa-mode .autoplay-inline { display:flex; }
+
 button {
   background: linear-gradient(90deg,var(--primary-start),var(--primary-end));
   color:#fff;
@@ -171,4 +178,5 @@ button.ghost {background:transparent;color:var(--accent);border:1px solid rgba(1
 
   /* desktop: autoplay row spans full width above buttons */
   .autoplay-row { grid-column: 1 / -1; display:flex; justify-content:flex-start; align-items:center; margin-bottom:6px }
+  .autoplay-inline { grid-column: 1 / -1; }
 }
