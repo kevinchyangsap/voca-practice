@@ -282,7 +282,9 @@ function updateReferenceImage(word) {
   // try exact local map first
   const key = (word || '').toLowerCase();
   if (LOCAL_IMAGE_MAP[key]) {
-    refImageEl.src = LOCAL_IMAGE_MAP[key];
+    const srcLocal = LOCAL_IMAGE_MAP[key];
+    console.log('[refImage] using local image for', key, srcLocal);
+    refImageEl.src = srcLocal;
     refImageEl.alt = `參考圖片：${word}`;
     refImageContainer.style.display = '';
     return;
@@ -292,6 +294,7 @@ function updateReferenceImage(word) {
   try {
     // Use Unsplash source image with query; use small size for faster load
     const src = `https://source.unsplash.com/featured/600x400/?${encodeURIComponent(word)}`;
+    console.log('[refImage] attempting remote image for', key, src);
     // set src and reveal container; if image fails to load, hide
     let settled = false;
     const timeoutId = setTimeout(() => {
@@ -299,11 +302,13 @@ function updateReferenceImage(word) {
         // loading taking too long -> hide
         refImageContainer.style.display = 'none';
         if (refImageLog) refImageLog.textContent = 'timeout';
+        console.log('[refImage] timeout for', src);
       }
     }, 6000);
 
     refImageEl.onload = () => { settled = true; clearTimeout(timeoutId); refImageContainer.style.display = ''; if (refImageLog) refImageLog.textContent = 'ok'; };
-    refImageEl.onerror = () => { settled = true; clearTimeout(timeoutId); refImageContainer.style.display = 'none'; if (refImageLog) refImageLog.textContent = 'error'; };
+    refImageEl.onload = () => { settled = true; clearTimeout(timeoutId); refImageContainer.style.display = ''; if (refImageLog) refImageLog.textContent = 'ok'; console.log('[refImage] loaded', src); };
+    refImageEl.onerror = () => { settled = true; clearTimeout(timeoutId); refImageContainer.style.display = 'none'; if (refImageLog) refImageLog.textContent = 'error'; console.log('[refImage] error loading', src); };
     // log attempted src for debugging
     if (refImageLog) refImageLog.textContent = src;
     refImageEl.src = src;
@@ -311,6 +316,7 @@ function updateReferenceImage(word) {
   } catch (e) {
     refImageContainer.style.display = 'none';
     if (refImageLog) refImageLog.textContent = 'exception';
+    console.log('[refImage] exception', e);
   }
 }
 
