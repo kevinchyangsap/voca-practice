@@ -179,4 +179,10 @@ button.ghost {background:transparent;color:var(--accent);border:1px solid rgba(1
   /* desktop: autoplay row spans full width above buttons */
   .autoplay-row { grid-column: 1 / -1; display:flex; justify-content:flex-start; align-items:center; margin-bottom:6px }
   .autoplay-inline { grid-column: 1 / -1; }
+
+  /* PWA mobile: place inline autoplay inside the fixed bottom bar without causing line breaks */
+  .pwa-mode .buttons { padding-top: 0; }
+  .pwa-mode .autoplay-inline { position: absolute; left:14px; top:8px; display:flex; gap:8px; align-items:center; z-index:42; }
+  .pwa-mode .buttons { position: fixed; left:12px; right:12px; bottom:12px; }
+  .pwa-mode .autoplay-inline .autoplay-interval input { width:56px; }
 }
