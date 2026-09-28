@@ -61,6 +61,10 @@ h1 {margin:0 0 8px 0;font-size:1.4rem;color:var(--accent);}
   align-items:center;
 }
 
+.pools { background: var(--card); border-radius:10px; padding:12px; margin-top:12px; box-shadow:0 4px 10px rgba(2,6,23,0.04); }
+.pools label { display:block; padding:6px 4px; font-weight:600; color:var(--muted); }
+.pools strong { display:block; margin-bottom:6px; color:var(--accent); }
+
 .word {font-size:1.8rem;font-weight:700;}
 .meaning {font-size:1.05rem;color:var(--muted)}
 .forms {font-size:0.95rem;color:#374151; margin-top:6px;}
@@ -116,7 +120,7 @@ button.ghost {background:transparent;color:var(--accent);border:1px solid rgba(1
     align-items:center;
     z-index:40;
   }
-  .weakness-controls{ margin-bottom:78px; }
+  .weakness-controls{ margin:0; display:flex; gap:8px; align-items:center; }
   .container{ padding-bottom:140px; }
 
   /* Make center Next button larger and more prominent */
