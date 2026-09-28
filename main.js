@@ -532,6 +532,27 @@ function getWeight(id) {
   return (Number.isInteger(w) && w >= 1 && w <= 5) ? w : 1;
 }
 
+// Persist/load weaknesses to localStorage
+function loadWeaknesses() {
+  try {
+    const raw = localStorage.getItem(LOCAL_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed === 'object') return parsed;
+  } catch (e) {
+    console.warn('loadWeaknesses failed', e);
+  }
+  return {};
+}
+
+function saveWeaknesses() {
+  try {
+    localStorage.setItem(LOCAL_KEY, JSON.stringify(weaknesses || {}));
+  } catch (e) {
+    console.warn('saveWeaknesses failed', e);
+  }
+}
+
 function changeWeight(delta) {
   if (!currentItem) { setFeedback('目前沒有題目可標記。'); return; }
   const id = currentItem.id;
