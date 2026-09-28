@@ -200,7 +200,6 @@ function enterSecondPhase() {
 // Weighted random selection with recent-3 avoidance
 function pickWeightedQuestion() {
   const pool = buildPool();
-  const pool = buildPool();
   if (!pool.length) {
     setFeedback('請至少勾選一個題庫。');
     return;
@@ -460,8 +459,8 @@ function onShowForms() {
 // btnNext handler
 function onNext() {
   // If no pool selected, try to start learning phase
-  if (!selSEL15.checked && !selSEL16.checked) {
-    setFeedback('請至少勾選一個題庫（SEL15 或 SEL16）。');
+  if (!buildPool().length) {
+    setFeedback('請至少勾選一個題庫。');
     return;
   }
   // If we haven't initialized learningQueue or user changed selection, (re)start learning phase
