@@ -74,71 +74,71 @@ const LOCAL_KEY = 'verb-practice-weakness-v2';
 let weaknesses = {}; // { "SEL15:bike": 2, ... }
 let learningQueue = []; // first stage shuffled array of items
 let learningIndex = 0;
-let secondPhase = false;
-let recentIds = []; // last 3 ids
-let currentItem = null; // { id, base, meaning, source }
-let currentDisplayIsEnglish = true;
-let autoplayIntervalId = null;
-
-// Utility: safe localStorage read
-function loadWeaknesses() {
   try {
-    const raw = localStorage.getItem(LOCAL_KEY);
-    if (!raw) return {};
-    const parsed = JSON.parse(raw);
-    if (typeof parsed === 'object' && parsed !== null) return parsed;
-    return {};
+    // Try multiple query variants to increase chance of relevant result.
+    const variants = [];
+    const cleaned = (word || '').trim();
+    if (cleaned) variants.push(cleaned);
+    // try splitting tokens (first token)
+    const first = cleaned.split(/\s+/)[0];
+    if (first && first !== cleaned) variants.push(first);
+    // try last token
+    const toks = cleaned.split(/\s+/);
+    const last = toks[toks.length - 1];
+    if (last && last !== cleaned && last !== first) variants.push(last);
+    // generic fallback
+    variants.push('object');
+
+    // loader that tries variants sequentially
+    function tryVariants(i) {
+      if (i >= variants.length) {
+        // all failed
+        refImageContainer.style.display = 'none';
+        if (refImageLog) refImageLog.textContent = 'all-failed';
+        console.log('[refImage] all variants failed for', key, variants);
+        return;
+      }
+      const q = variants[i];
+      const src = `https://source.unsplash.com/featured/600x400/?${encodeURIComponent(q)}`;
+      console.log('[refImage] attempting remote image variant', q, src);
+      if (refImageLog) refImageLog.textContent = src;
+
+      // use off-DOM Image to test load
+      const tester = new Image();
+      let settled = false;
+      const to = setTimeout(() => {
+        if (!settled) {
+          settled = true;
+          console.log('[refImage] timeout for', src);
+          tryVariants(i + 1);
+        }
+      }, 6000);
+
+      tester.onload = () => {
+        if (settled) return;
+        settled = true; clearTimeout(to);
+        // accept this image
+        refImageEl.src = src;
+        refImageEl.alt = `參考圖片：${word}`;
+        refImageContainer.style.display = '';
+        if (refImageLog) refImageLog.textContent = 'ok';
+        console.log('[refImage] loaded', src);
+      };
+      tester.onerror = () => {
+        if (settled) return;
+        settled = true; clearTimeout(to);
+        console.log('[refImage] error loading', src);
+        tryVariants(i + 1);
+      };
+      tester.src = src;
+    }
+
+    tryVariants(0);
   } catch (e) {
-    console.warn('讀取弱點資料失敗，使用空資料。', e);
-    return {};
+    refImageContainer.style.display = 'none';
+    if (refImageLog) refImageLog.textContent = 'exception';
+    console.log('[refImage] exception', e);
   }
-}
-
-function saveWeaknesses() {
-  try {
-    localStorage.setItem(LOCAL_KEY, JSON.stringify(weaknesses));
-  } catch (e) {
-    console.warn('儲存弱點資料失敗。', e);
-  }
-}
-
-// Fisher-Yates shuffle
-function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-}
-
-// Build pool from selected checkboxes
-function buildPool() {
-  const pool = [];
-  if (selSPU7 && selSPU7.checked) {
-    SPU7Verbs.forEach(v => {
-      pool.push({ id: `SPU7:${v.base}`, base: v.base, meaning: v.meaning, source: 'SPU7' });
-    });
-  }
-  if (selSEL15.checked) {
-    SEL15Verbs.forEach(v => {
-      pool.push({ id: `SEL15:${v.base}`, base: v.base, meaning: v.meaning, source: 'SEL15' });
-    });
-  }
-  if (selSEL16.checked) {
-    abaVerbs.forEach(v => {
-      pool.push({ id: `SEL16:${v.base}`, base: v.base, meaning: v.meaning, source: 'SEL16' });
-    });
-  }
-  return pool;
-}
-
-// Start or restart the learning phase
-function startLearningPhase() {
-  const pool = buildPool();
-  if (!pool.length) {
-    setFeedback('請至少勾選一個題庫。');
-    return false;
-  }
-  // initialize learning queue: shuffle and set index
   learningQueue = pool.slice();
   shuffle(learningQueue);
   learningIndex = 0;
