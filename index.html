@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="main.js" defer></script>
+  <title>單字練習</title>
+</head>
+<body>
+  <main class="container">
+    <header>
+      <h1>單字練習</h1>
+      <div class="controls-top">
+        <div class="display-options">
+          <label><input type="radio" name="displayLang" id="optLangEn" value="en" checked /> 英文</label>
+          <label><input type="radio" name="displayLang" id="optLangZh" value="zh" /> 中文</label>
+          <label><input type="radio" name="displayLang" id="optLangRand" value="rand" /> 隨機</label>
+        </div>
+        <div class="options">
+          <strong>題庫：</strong>
+          <label><input type="checkbox" id="SEL15" /> Smart English L15</label>
+          <label><input type="checkbox" id="SEL16" /> Smart English L16</label>
+        </div>
+      </div>
+    </header>
+
+    <section class="practice">
+      <div class="status">
+        <div id="roundStatus">完整學習輪：剩餘 0 題</div>
+        <div id="weakStatus"></div>
+      </div>
+
+      <div class="card">
+        <div class="word" id="wordBase">請選擇題庫並按「下一題」</div>
+        <div class="meaning" id="wordMeaning"></div>
+        <div class="forms" id="forms"></div>
+      </div>
+
+      <div class="buttons">
+        <button id="btnSpeakBase">確認發音</button>
+        <button id="btnShowForms">顯示翻譯</button>
+        <button id="btnNext">下一題</button>
+      </div>
+
+      <div class="weakness-controls">
+        <button id="btnMarkHard">標記弱點</button>
+        <button id="btnMarkEasy">已熟悉</button>
+        <button id="btnResetWeak">重設弱點</button>
+      </div>
+
+      <div id="feedback" class="feedback" aria-live="polite"></div>
+    </section>
+
+    <footer class="footer-note">
+      <small>弱點資料會保存在本機裝置 (localStorage)</small>
+    </footer>
+  </main>
+
+  <script src="main.js" defer></script>
+</body>
+</html>
