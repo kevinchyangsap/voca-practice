@@ -314,9 +314,36 @@ function speakText(text, preferredLang) {
 
 // Ding sound using Web Audio for a short click/ping
 let audioCtx = null;
+let audioUnlocked = false;
+function unlockAudio() {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    // try to resume if suspended
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume().catch(()=>{});
+    }
+    // some mobile browsers require an actual sound to unlock — play a near-silent quick oscillator
+    const g = audioCtx.createGain();
+    g.gain.setValueAtTime(0.00001, audioCtx.currentTime);
+    const o = audioCtx.createOscillator();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(200, audioCtx.currentTime);
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start();
+    o.stop(audioCtx.currentTime + 0.01);
+    audioUnlocked = true;
+  } catch (e) {
+    // ignore — unlocking may fail on some browsers
+    console.warn('unlockAudio failed', e);
+  }
+}
 function playDing() {
   try {
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    // try to resume on demand (useful if called on user gesture)
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume().catch(()=>{});
+    }
     const o = audioCtx.createOscillator();
     const g = audioCtx.createGain();
     o.type = 'sine';
@@ -391,6 +418,8 @@ function onNext() {
   }
 
   // after showing new item, handle sound behavior based on platform and settings
+  // try unlocking audio on first user gesture
+  try { unlockAudio(); } catch (e) {}
   handleNextSoundBehavior();
 }
 
