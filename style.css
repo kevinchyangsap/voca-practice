@@ -61,9 +61,12 @@ h1 {margin:0 0 8px 0;font-size:1.4rem;color:var(--accent);}
   align-items:center;
 }
 
-.pools { background: var(--card); border-radius:10px; padding:12px; margin-top:12px; box-shadow:0 4px 10px rgba(2,6,23,0.04); }
-.pools label { display:block; padding:6px 4px; font-weight:600; color:var(--muted); }
-.pools strong { display:block; margin-bottom:6px; color:var(--accent); }
+.pools { background: var(--card); border-radius:12px; padding:14px; margin-top:18px; box-shadow:0 8px 20px rgba(2,6,23,0.06); border:1px solid rgba(2,6,23,0.04); }
+.pools label { display:block; padding:8px 6px; font-weight:600; color:var(--muted); }
+.pools strong { display:block; margin-bottom:10px; color:var(--accent); font-size:1rem; }
+
+/* Give pools its own visual separation under the main card */
+#poolsBox { max-width:100%; }
 
 .word {font-size:1.8rem;font-weight:700;}
 .meaning {font-size:1.05rem;color:var(--muted)}
