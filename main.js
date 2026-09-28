@@ -401,13 +401,8 @@ function isMobilePlatform() {
 }
 
 function handleNextSoundBehavior() {
-  const mobile = isMobilePlatform();
-  // Mobile: never play ding or auto-speak on next
-  if (mobile) return;
-
-  // Desktop: if auto-speak enabled, only speak (no ding). Otherwise play ding only.
+  // Both desktop and mobile: if auto-speak enabled, only speak (no ding). Otherwise play ding only.
   if (chkAutoSpeak && chkAutoSpeak.checked) {
-    // speak current item
     onSpeakBase();
   } else {
     playDing();
