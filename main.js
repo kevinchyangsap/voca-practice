@@ -334,6 +334,33 @@ function speakText(text, preferredLang, attempt = 0) {
 // Ding sound using Web Audio for a short click/ping
 let audioCtx = null;
 let audioUnlocked = false;
+let speechUnlocked = false;
+
+function isPWAMode() {
+  try {
+    if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) return true;
+    if (window.navigator && window.navigator.standalone) return true; // iOS
+    return false;
+  } catch (e) { return false; }
+}
+
+function unlockSpeech() {
+  if (speechUnlocked) return;
+  try {
+    if (!voicesCache.length) loadVoices();
+    // use zero-width space to avoid audible words; set low volume so it's unobtrusive
+    const probe = new SpeechSynthesisUtterance('\u200B');
+    probe.volume = 0.01;
+    probe.rate = 1.0;
+    probe.pitch = 1.0;
+    probe.onstart = () => { speechUnlocked = true; };
+    probe.onend = () => { speechUnlocked = true; };
+    probe.onerror = () => { /* ignore */ };
+    try { window.speechSynthesis.speak(probe); } catch (e) { console.warn('unlockSpeech.speak failed', e); }
+  } catch (e) {
+    console.warn('unlockSpeech failed', e);
+  }
+}
 function unlockAudio() {
   try {
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -439,6 +466,8 @@ function onNext() {
   // after showing new item, handle sound behavior based on platform and settings
   // try unlocking audio on first user gesture
   try { unlockAudio(); } catch (e) {}
+  // If running as PWA, also attempt to unlock speech specifically
+  try { if (isPWAMode()) unlockSpeech(); } catch (e) {}
   handleNextSoundBehavior();
 }
 
