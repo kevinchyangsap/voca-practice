@@ -213,3 +213,24 @@ button.ghost {background:transparent;color:var(--accent);border:1px solid rgba(1
     .pwa-mode .autoplay-inline { gap:6px; padding:6px 6px; }
   }
 }
+
+/* In landscape, keep the controls in the page flow so they cannot cover the word pools. */
+@media (orientation: landscape) and (max-height: 600px) {
+  .buttons,
+  .pwa-mode .buttons {
+    position: static;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    width: auto;
+    margin: 12px 0;
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+    z-index: auto;
+  }
+
+  .container { padding-bottom: 24px; }
+  .pwa-mode .weakness-controls button { width: auto; flex: 1 1 0; }
+}

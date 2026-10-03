@@ -28,7 +28,7 @@ window.SPU7Verbs = window.SPU7Verbs || [
   { base: "card", meaning: "卡片" },
   { base: "park", meaning: "公園" },
   { base: "farmer", meaning: "農夫" },
-  { base: "house", meaning: "房子" },
+  { base: "horse", meaning: "馬" },
   { base: "cork", meaning: "軟木塞" },
   { base: "fork", meaning: "叉子" },
   { base: "store", meaning: "商店" },
@@ -264,7 +264,7 @@ const CARTOON_EMOJI_MAP = {
   card: '🃏',
   park: '🏞️',
   farmer: '🧑‍🌾',
-  house: '🏠',
+  horse: '🐎',
   cork: '🍾',
   fork: '🍴',
   store: '🏪',
@@ -455,6 +455,37 @@ function speakText(text, preferredLang, attempt = 0) {
   }
 }
 
+function speakTextSequence(items, attempt = 0) {
+  try {
+    window.speechSynthesis.cancel();
+    if (!voicesCache.length) loadVoices();
+
+    const available = (window.speechSynthesis.getVoices && window.speechSynthesis.getVoices().length > 0) || voicesCache.length > 0;
+    if (!available && attempt < 6) {
+      setTimeout(() => speakTextSequence(items, attempt + 1), 250);
+      return;
+    }
+
+    for (const item of items) {
+      const utter = new SpeechSynthesisUtterance(item.text);
+      utter.rate = 0.88;
+      const voice = findBestVoice(item.lang);
+      if (voice) {
+        utter.voice = voice;
+        utter.lang = voice.lang || item.lang;
+      } else {
+        utter.lang = item.lang;
+      }
+      utter.onerror = event => console.warn('TTS sequence error', event);
+      utter.onstart = () => { audioUnlocked = true; };
+      window.speechSynthesis.speak(utter);
+    }
+  } catch (error) {
+    console.warn('Unable to speak question and answer', error);
+    setFeedback('無法播放語音，請確認裝置的語音設定。');
+  }
+}
+
 // Ding sound using Web Audio for a short click/ping
 let audioCtx = null;
 let audioUnlocked = false;
@@ -543,19 +574,25 @@ function onSpeakBase() {
   }
 }
 
-// btnShowForms handler: show translation and auto-speak translation
+// btnShowForms handler: show the answer and read both the question and answer aloud.
 function onShowForms() {
   if (!currentItem) { setFeedback('目前沒有題目可顯示。'); return; }
   if (currentDisplayIsEnglish) {
     // question shown in English -> show Chinese
     wordMeaningEl.textContent = currentItem.meaning;
     wordMeaningEl.lang = 'zh-Hant';
-    speakText(currentItem.meaning, 'zh-TW');
+    speakTextSequence([
+      { text: currentItem.base, lang: 'en-US' },
+      { text: currentItem.meaning, lang: 'zh-TW' }
+    ]);
   } else {
     // question shown in Chinese -> show English
     wordMeaningEl.textContent = currentItem.base;
     wordMeaningEl.lang = 'en';
-    speakText(currentItem.base, 'en-US');
+    speakTextSequence([
+      { text: currentItem.meaning, lang: 'zh-TW' },
+      { text: currentItem.base, lang: 'en-US' }
+    ]);
   }
 }
 
