@@ -159,11 +159,9 @@ function prepareLearningQueue() {
 
 // Update pool counts in the UI
 function updatePoolCounts() {
-  try {
-    if (countSEL15) countSEL15.textContent = `(${SEL15Verbs.length})`;
-    if (countSPU8) countSPU8.textContent = `(${SPU8Verbs.length})`;
-    if (countSPU7 && window.SPU7Verbs) countSPU7.textContent = `(${SPU7Verbs.length})`;
-  } catch (e) { /* ignore UI update failures */ }
+  if (countSEL15) countSEL15.textContent = `(${window.SEL15Verbs?.length || 0} 題)`;
+  if (countSPU8) countSPU8.textContent = `(${window.SPU8Verbs?.length || 0} 題)`;
+  if (countSPU7) countSPU7.textContent = `(${window.SPU7Verbs?.length || 0} 題)`;
 }
 
 function updateRoundStatus() {
@@ -769,7 +767,11 @@ if (btnTogglePools && poolsListEl) {
     const expanded = btnTogglePools.getAttribute('aria-expanded') === 'true';
     btnTogglePools.setAttribute('aria-expanded', String(!expanded));
     poolsListEl.hidden = expanded;
-    btnTogglePools.textContent = expanded ? '展開題庫' : '收起題庫';
+    poolsListEl.classList.toggle('is-collapsed', expanded);
+    const label = expanded ? '展開題庫' : '收合題庫';
+    btnTogglePools.textContent = expanded ? '▸' : '▾';
+    btnTogglePools.setAttribute('aria-label', label);
+    btnTogglePools.title = label;
   });
 }
 
