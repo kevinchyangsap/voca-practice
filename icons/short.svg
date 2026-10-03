@@ -12,6 +12,8 @@
   </defs>
   <rect x="7" y="7" width="286" height="206" rx="24" fill="#f8fafc"/>
   <path d="M35 184H265" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
+  <path d="M42 176V66" fill="none" stroke="#f59e0b" stroke-width="4" stroke-linecap="round"/>
+  <path d="m33 73 9-14 9 14Z" fill="#f59e0b"/>
 
   <!-- shorter person -->
   <path d="M64 184v-10l7-24m25 34v-10l-7-24" fill="none" stroke="#334155" stroke-width="8" stroke-linecap="round"/>
@@ -35,7 +37,5 @@
   <circle cx="211" cy="58" r="2.5" fill="#334155"/>
   <path d="M199 67q5 5 10 0" fill="none" stroke="#a84c54" stroke-width="2.5" stroke-linecap="round"/>
 
-  <rect x="36" y="22" width="92" height="30" rx="15" fill="#ffe4e6"/>
-  <text x="82" y="42" text-anchor="middle" font-family="Arial,sans-serif" font-size="15" font-weight="700" letter-spacing="1" fill="#be123c">SHORT</text>
   <path d="M137 75v100" stroke="#94a3b8" stroke-width="2" stroke-dasharray="5 5"/>
 </svg>
