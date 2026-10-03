@@ -279,7 +279,6 @@ const CARTOON_EMOJI_MAP = {
   star: '⭐',
   arm: '💪',
   start: '🏁',
-  short: '📏',
   popcorn: '🍿',
   card: '🃏',
   park: '🏞️',
@@ -297,12 +296,13 @@ function twemojiUrl(emoji) {
     .map(character => character.codePointAt(0).toString(16))
     .filter(codepoint => codepoint !== 'fe0f')
     .join('-');
-  return `https://cdn.jsdelivr.net/gh/twitter/twemoji@15.1.0/assets/svg/${codepoints}.svg`;
+  return `https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/${codepoints}.svg`;
 }
 
 // Reference image loader: try local and cartoon mappings, then search for cartoon art.
 const LOCAL_IMAGE_MAP = {
-  'glue stick': 'icons/glue-stick.svg'
+  'glue stick': 'icons/glue-stick.svg',
+  short: 'icons/short.svg'
 };
 
 let referenceImageRequestId = 0;
@@ -311,6 +311,8 @@ function updateReferenceImage(word) {
   if (!refImageEl || !refImageContainer) return;
   const requestId = ++referenceImageRequestId;
   refImageContainer.style.display = 'none';
+  refImageContainer.classList.remove('image-fallback');
+  delete refImageContainer.dataset.emojiFallback;
   refImageEl.removeAttribute('src');
   // try exact local map first
   const key = (word || '').trim().toLowerCase();
@@ -329,7 +331,10 @@ function updateReferenceImage(word) {
       if (requestId === referenceImageRequestId) refImageContainer.style.display = '';
     };
     refImageEl.onerror = () => {
-      if (requestId === referenceImageRequestId) refImageContainer.style.display = 'none';
+      if (requestId !== referenceImageRequestId) return;
+      refImageContainer.dataset.emojiFallback = cartoon;
+      refImageContainer.classList.add('image-fallback');
+      refImageContainer.style.display = '';
     };
     refImageEl.src = twemojiUrl(cartoon);
     return;

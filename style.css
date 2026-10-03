@@ -82,6 +82,9 @@ h1 {margin:0 0 8px 0;font-size:1.4rem;color:var(--accent);}
 
 .ref-image { width:100%; max-width:420px; margin-top:12px; display:flex; justify-content:center; }
 .ref-image img { width:100%; height:220px; border-radius:10px; padding:12px; background:#f8fafc; box-shadow: 0 8px 24px rgba(2,6,23,0.08); object-fit:contain; }
+.ref-image.image-fallback { height:220px; align-items:center; border-radius:10px; background:#f8fafc; }
+.ref-image.image-fallback::before { content:attr(data-emoji-fallback); font-size:clamp(96px, 20vw, 180px); line-height:1; }
+.ref-image.image-fallback img { display:none; }
 .ref-image .ref-image-log { font-size:0.78rem; color:var(--muted); margin-left:8px; align-self:center; max-width:140px; overflow:hidden; text-overflow:ellipsis; }
 
 .buttons, .weakness-controls {

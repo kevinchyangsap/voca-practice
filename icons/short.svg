@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 220" role="img" aria-labelledby="title">
+  <title id="title">Short and tall height comparison</title>
+  <defs>
+    <linearGradient id="short-shirt" x1="0" x2="1">
+      <stop offset="0" stop-color="#fb7185"/>
+      <stop offset="1" stop-color="#f43f5e"/>
+    </linearGradient>
+    <linearGradient id="tall-shirt" x1="0" x2="1">
+      <stop offset="0" stop-color="#38bdf8"/>
+      <stop offset="1" stop-color="#2563eb"/>
+    </linearGradient>
+  </defs>
+  <rect x="7" y="7" width="286" height="206" rx="24" fill="#f8fafc"/>
+  <path d="M35 184H265" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- shorter person -->
+  <path d="M64 184v-10l7-24m25 34v-10l-7-24" fill="none" stroke="#334155" stroke-width="8" stroke-linecap="round"/>
+  <path d="M64 184h12m8 0h12" stroke="#334155" stroke-width="7" stroke-linecap="round"/>
+  <path d="M64 113q0-8 9-8h18q9 0 9 8v37q0 7-8 7H72q-8 0-8-7Z" fill="url(#short-shirt)"/>
+  <path d="M64 118 51 139m49-21 11 19" fill="none" stroke="#f2b98f" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="82" cy="84" r="22" fill="#f6c9a8"/>
+  <path d="M61 83q1-24 22-24 17 0 21 19-10-8-21-8-12 0-22 13Z" fill="#62433a"/>
+  <circle cx="75" cy="86" r="2.5" fill="#334155"/>
+  <circle cx="89" cy="86" r="2.5" fill="#334155"/>
+  <path d="M77 95q5 5 10 0" fill="none" stroke="#b4535b" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- taller person for comparison -->
+  <path d="M192 184v-12l-5-29m31 41v-12l5-29" fill="none" stroke="#334155" stroke-width="9" stroke-linecap="round"/>
+  <path d="M185 184h15m16 0h15" stroke="#334155" stroke-width="7" stroke-linecap="round"/>
+  <path d="M184 88q0-9 10-9h20q10 0 10 9v56q0 8-9 8h-22q-9 0-9-8Z" fill="url(#tall-shirt)"/>
+  <path d="m185 96-17 28m56-28 15 28" fill="none" stroke="#d99c78" stroke-width="9" stroke-linecap="round"/>
+  <circle cx="204" cy="56" r="23" fill="#eeb795"/>
+  <path d="M181 55q2-25 24-25 16 0 22 18-12-8-23-8-13 0-23 15Z" fill="#3f342f"/>
+  <circle cx="197" cy="58" r="2.5" fill="#334155"/>
+  <circle cx="211" cy="58" r="2.5" fill="#334155"/>
+  <path d="M199 67q5 5 10 0" fill="none" stroke="#a84c54" stroke-width="2.5" stroke-linecap="round"/>
+
+  <rect x="36" y="22" width="92" height="30" rx="15" fill="#ffe4e6"/>
+  <text x="82" y="42" text-anchor="middle" font-family="Arial,sans-serif" font-size="15" font-weight="700" letter-spacing="1" fill="#be123c">SHORT</text>
+  <path d="M137 75v100" stroke="#94a3b8" stroke-width="2" stroke-dasharray="5 5"/>
+</svg>
