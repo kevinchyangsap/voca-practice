@@ -63,7 +63,12 @@ h1 {margin:0 0 8px 0;font-size:1.4rem;color:var(--accent);}
 
 .pools { background: var(--card); border-radius:12px; padding:14px; margin-top:18px; box-shadow:0 8px 20px rgba(2,6,23,0.06); border:1px solid rgba(2,6,23,0.04); }
 .pools label { display:block; padding:8px 6px; font-weight:600; color:var(--muted); }
-.pools strong { display:block; margin-bottom:10px; color:var(--accent); font-size:1rem; }
+.pools-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px; }
+.pools-heading strong { color:var(--accent); font-size:1rem; }
+.pools-heading button { padding:6px 10px; font-size:0.85rem; background:linear-gradient(90deg,#94a3b8,#6b7280); }
+.pools > strong, .options > strong { display:none; }
+.options .pools-heading { margin-bottom:6px; }
+.options .pool-list label { display:block; padding:6px 0; }
 
 /* Give pools its own visual separation under the main card */
 #poolsBox { max-width:100%; }
@@ -216,6 +221,20 @@ button.ghost {background:transparent;color:var(--accent);border:1px solid rgba(1
 
 /* In landscape, keep the controls in the page flow so they cannot cover the word pools. */
 @media (orientation: landscape) and (max-height: 600px) {
+  .card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(150px, 38%);
+    grid-template-areas: "word image" "meaning image" "forms image";
+    align-items: center;
+    justify-items: start;
+  }
+
+  #wordBase { grid-area: word; text-align: left; }
+  #wordMeaning { grid-area: meaning; text-align: left; }
+  #forms { grid-area: forms; text-align: left; }
+  .ref-image { grid-area: image; width: 100%; max-width: 300px; margin: 0; justify-self: end; }
+  .ref-image img { height: min(220px, 36vh); }
+
   .buttons,
   .pwa-mode .buttons {
     position: static;

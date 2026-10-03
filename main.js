@@ -11,11 +11,19 @@ window.SEL15Verbs = window.SEL15Verbs || [
   { base: "soccer ball", meaning: "足球" },
 ];
 
-window.abaVerbs = window.abaVerbs || [
-  { base: "kite", meaning: "風箏" },
-  { base: "windy", meaning: "有風的" },
-  { base: "scissor", meaning: "剪刀" },
-  { base: "glue stick", meaning: "口紅膠" },
+window.SPU8Verbs = window.SPU8Verbs || [
+  { base: "book", meaning: "書" },
+  { base: "cook", meaning: "煮；烹飪" },
+  { base: "hook", meaning: "鉤子" },
+  { base: "look", meaning: "看；看起來" },
+  { base: "foot", meaning: "腳" },
+  { base: "wood", meaning: "木頭" },
+  { base: "moon", meaning: "月亮" },
+  { base: "pool", meaning: "游泳池" },
+  { base: "goose", meaning: "鵝" },
+  { base: "spoon", meaning: "湯匙" },
+  { base: "food", meaning: "食物" },
+  { base: "zoo", meaning: "動物園" },
 ];
 
 window.SPU7Verbs = window.SPU7Verbs || [
@@ -38,10 +46,12 @@ window.SPU7Verbs = window.SPU7Verbs || [
 
 // DOM elements (IDs required by the spec)
 const selSEL15 = document.getElementById('SEL15');
-const selSEL16 = document.getElementById('SEL16');
+const selSPU8 = document.getElementById('SPU8');
 const selSPU7 = document.getElementById('SPU7');
+const btnTogglePools = document.getElementById('btnTogglePools');
+const poolsListEl = document.getElementById('poolsList');
 const countSEL15 = document.getElementById('count-SEL15');
-const countSEL16 = document.getElementById('count-SEL16');
+const countSPU8 = document.getElementById('count-SPU8');
 const countSPU7 = document.getElementById('count-SPU7');
 
 const wordBaseEl = document.getElementById('wordBase');
@@ -108,10 +118,10 @@ function buildPool() {
       out.push({ id: `SEL15:${it.base}`, base: it.base, meaning: it.meaning, source: 'SEL15' });
     }
   }
-  // SEL16 / abaVerbs
-  if (selSEL16 && selSEL16.checked && Array.isArray(window.abaVerbs)) {
-    for (const it of window.abaVerbs) {
-      out.push({ id: `SEL16:${it.base}`, base: it.base, meaning: it.meaning, source: 'SEL16' });
+  // SPU8
+  if (selSPU8 && selSPU8.checked && Array.isArray(window.SPU8Verbs)) {
+    for (const it of window.SPU8Verbs) {
+      out.push({ id: `SPU8:${it.base}`, base: it.base, meaning: it.meaning, source: 'SPU8' });
     }
   }
   // SPU7
@@ -151,7 +161,7 @@ function prepareLearningQueue() {
 function updatePoolCounts() {
   try {
     if (countSEL15) countSEL15.textContent = `(${SEL15Verbs.length})`;
-    if (countSEL16) countSEL16.textContent = `(${abaVerbs.length})`;
+    if (countSPU8) countSPU8.textContent = `(${SPU8Verbs.length})`;
     if (countSPU7 && window.SPU7Verbs) countSPU7.textContent = `(${SPU7Verbs.length})`;
   } catch (e) { /* ignore UI update failures */ }
 }
@@ -248,6 +258,18 @@ function setCurrentItem(item) {
 // Cartoon-style illustrations for the vocabulary used in the current word sets.
 // Twemoji provides consistent, colorful SVG artwork for these familiar concepts.
 const CARTOON_EMOJI_MAP = {
+  book: '📘',
+  cook: '👩‍🍳',
+  hook: '🪝',
+  look: '👀',
+  foot: '🦶',
+  wood: '🪵',
+  moon: '🌙',
+  pool: '🏊',
+  goose: '🪿',
+  spoon: '🥄',
+  food: '🍲',
+  zoo: '🦁',
   bike: '🚲',
   'inline skates': '🛼',
   kite: '🪁',
@@ -277,7 +299,7 @@ function twemojiUrl(emoji) {
     .map(character => character.codePointAt(0).toString(16))
     .filter(codepoint => codepoint !== 'fe0f')
     .join('-');
-  return `https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/${codepoints}.svg`;
+  return `https://cdn.jsdelivr.net/gh/twitter/twemoji@15.1.0/assets/svg/${codepoints}.svg`;
 }
 
 // Reference image loader: try local and cartoon mappings, then search for cartoon art.
@@ -742,6 +764,15 @@ function setFeedback(msg) {
 }
 
 // Event bindings
+if (btnTogglePools && poolsListEl) {
+  btnTogglePools.addEventListener('click', () => {
+    const expanded = btnTogglePools.getAttribute('aria-expanded') === 'true';
+    btnTogglePools.setAttribute('aria-expanded', String(!expanded));
+    poolsListEl.hidden = expanded;
+    btnTogglePools.textContent = expanded ? '展開題庫' : '收起題庫';
+  });
+}
+
 btnSpeakBase.addEventListener('click', onSpeakBase);
 btnShowForms.addEventListener('click', onShowForms);
 btnNext.addEventListener('click', onNext);
@@ -754,7 +785,7 @@ selSEL15.addEventListener('change', () => {
   // restart learning phase to reshuffle and display immediately
   startLearningPhase();
 });
-selSEL16.addEventListener('change', () => {
+selSPU8.addEventListener('change', () => {
   startLearningPhase();
 });
 if (selSPU7) {
@@ -840,7 +871,7 @@ function init() {
   updateWeakInfo();
   // default: select all available pools
   selSEL15.checked = true;
-  selSEL16.checked = true;
+  selSPU8.checked = true;
   if (selSPU7) selSPU7.checked = true;
   // populate counts
   updatePoolCounts();
